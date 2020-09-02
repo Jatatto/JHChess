@@ -6,8 +6,9 @@ import com.jakehonea.jhchess.piece.PieceType;
 import com.jakehonea.jhchess.piece.Square;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BishopPiece extends Piece {
 
@@ -18,9 +19,9 @@ public class BishopPiece extends Piece {
     }
 
     @Override
-    public List<Square> getAvailableMoves(ChessBoard chessBoard) {
+    public Map<Square, Boolean> getAvailableMoves(ChessBoard chessBoard) {
 
-        List<Square> moves = new ArrayList<>();
+        Map<Square, Boolean> moves = new HashMap<>();
 
         getMovesInDiagonal(chessBoard, moves, 1, 1);
         getMovesInDiagonal(chessBoard, moves, -1, 1);
@@ -31,7 +32,7 @@ public class BishopPiece extends Piece {
 
     }
 
-    public void getMovesInDiagonal(ChessBoard board, List<Square> moves, int xDirection, int yDirection) {
+    public void getMovesInDiagonal(ChessBoard board, Map<Square, Boolean> moves, int xDirection, int yDirection) {
 
         for (int x = 1; x < 9; x++) {
 
@@ -40,11 +41,11 @@ public class BishopPiece extends Piece {
             if (square != null) {
 
                 if (square.getPiece() == null)
-                    moves.add(square);
+                    moves.put(square, true);
                 else {
 
                     if (square.getPiece().getSide() != getSide())
-                        moves.add(square);
+                        moves.put(square, true);
 
                     break;
 

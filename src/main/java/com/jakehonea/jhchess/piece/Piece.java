@@ -1,17 +1,16 @@
 package com.jakehonea.jhchess.piece;
 
 import com.jakehonea.jhchess.ChessBoard;
-import com.jakehonea.jhchess.JHChess;
+import com.jakehonea.jhchess.piece.pieces.KingPiece;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public abstract class Piece {
 
-    private final List<Square> moves = new ArrayList<>();
+    private Map<Square, Boolean> moves;
     private final ChessBoard board;
     private final PieceType type;
     private final boolean side;
@@ -59,29 +58,6 @@ public abstract class Piece {
 
     }
 
-    public void move(Square square) {
-
-        getSquare().setPiece(null);
-        square.setPiece(this);
-
-        square.getBoard().getSquares().forEach(pieceSquare -> {
-
-            if (pieceSquare.getPiece() != null)
-                pieceSquare.getPiece().getProcessedMoves(square.getBoard()).clear();
-
-        });
-
-    }
-
-    public List<Square> getProcessedMoves(ChessBoard board) {
-
-        if (moves.size() == 0)
-            moves.addAll(getAvailableMoves(board));
-
-        return moves;
-
-    }
-
     public void update(Graphics graphics) {
 
         if (icon.getIconWidth() != getSquare().getWidth())
@@ -92,6 +68,52 @@ public abstract class Piece {
 
     }
 
-    public abstract List<Square> getAvailableMoves(ChessBoard chessBoard);
+    public void move(Square square) {
+
+        getSquare().setPiece(null);
+        square.setPiece(this);
+
+        board.processMoves();
+    }
+
+    public void setMoves(Map<Square, Boolean> moves) {
+
+        this.moves = moves;
+
+    }
+
+    public Map<Square, Boolean> getProcessedMoves(ChessBoard board) {
+
+        if (moves == null)
+            moves = getAvailableMoves(board);
+
+        moves.keySet().removeIf(square -> (square.getPiece() != null && square.getPiece().getType() == PieceType.KING) || !isLegalMove(square));
+
+        return moves;
+
+    }
+
+    public boolean isLegalMove(Square square) {
+
+        if (this instanceof KingPiece)
+            return getBoard().getTeamSquares(!getSide()).stream()
+                    .noneMatch(pieceSquare -> {
+
+                        if (pieceSquare.getPiece().getType() == PieceType.KING)
+                            return false;
+
+                        if (pieceSquare.getPiece().getProcessedMoves(getBoard()).containsKey(square))
+                            return pieceSquare.getPiece().getProcessedMoves(getBoard()).get(square);
+
+                        return false;
+
+                    });
+
+        return true;
+
+    }
+
+
+    public abstract Map<Square, Boolean> getAvailableMoves(ChessBoard chessBoard);
 
 }

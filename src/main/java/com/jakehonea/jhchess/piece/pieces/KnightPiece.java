@@ -7,9 +7,7 @@ import com.jakehonea.jhchess.piece.Square;
 import com.jakehonea.jhchess.utils.Pair;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class KnightPiece extends Piece {
 
@@ -36,9 +34,9 @@ public class KnightPiece extends Piece {
     }
 
     @Override
-    public List<Square> getAvailableMoves(ChessBoard chessBoard) {
+    public Map<Square, Boolean> getAvailableMoves(ChessBoard chessBoard) {
 
-        List<Square> moves = new ArrayList<>();
+        Map<Square, Boolean> moves = new HashMap<>();
 
         Arrays.stream(knightOffsets).forEach(pair -> {
 
@@ -47,9 +45,9 @@ public class KnightPiece extends Piece {
             if (square != null) {
 
                 if (square.getPiece() != null && square.getPiece().getSide() != getSide())
-                    moves.add(square);
+                    moves.put(square, true);
                 else if (square.getPiece() == null)
-                    moves.add(square);
+                    moves.put(square, true);
 
             }
 

@@ -6,8 +6,8 @@ import com.jakehonea.jhchess.piece.PieceType;
 import com.jakehonea.jhchess.piece.Square;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PawnPiece extends Piece {
 
@@ -29,9 +29,9 @@ public class PawnPiece extends Piece {
     }
 
     @Override
-    public List<Square> getAvailableMoves(ChessBoard chessBoard) {
+    public Map<Square, Boolean> getAvailableMoves(ChessBoard chessBoard) {
 
-        List<Square> moves = new ArrayList<>();
+        Map<Square, Boolean> moves = new HashMap<>();
 
         int direction = getSide() ? 1 : -1;
 
@@ -43,7 +43,7 @@ public class PawnPiece extends Piece {
                 if (square.getPiece() != null)
                     break;
 
-                moves.add(square);
+                moves.put(square, false);
 
             }
 
@@ -56,7 +56,7 @@ public class PawnPiece extends Piece {
 
         for (Square square : diagonal)
             if (square != null && square.getPiece() != null && square.getPiece().getSide() != getSide())
-                moves.add(square);
+                moves.put(square, true);
 
         return moves;
 

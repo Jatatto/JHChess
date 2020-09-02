@@ -5,8 +5,8 @@ import com.jakehonea.jhchess.piece.PieceType;
 import com.jakehonea.jhchess.piece.Square;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class QueenPiece extends RookPiece {
 
@@ -17,9 +17,9 @@ public class QueenPiece extends RookPiece {
     }
 
     @Override
-    public List<Square> getAvailableMoves(ChessBoard chessBoard) {
+    public Map<Square, Boolean> getAvailableMoves(ChessBoard chessBoard) {
 
-        List<Square> moves = new ArrayList<>();
+        Map<Square, Boolean> moves = new HashMap<>();
 
         getMovesInDiagonal(chessBoard, moves, 1, 1);
         getMovesInDiagonal(chessBoard, moves, -1, 1);

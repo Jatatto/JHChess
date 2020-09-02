@@ -34,6 +34,8 @@ public class ChessBoard extends JFrame {
 
         Insets insets = new Insets(26, 3, 3, 3);
 
+        this.turn = false;
+
         this.referenceSheet = new PieceReferenceSheet();
 
         this.squares = new ArrayList<>();
@@ -47,6 +49,52 @@ public class ChessBoard extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
         setVisible(true);
+
+    }
+
+    public Square getSquareWithType(PieceType type, boolean side) {
+
+        return getTeamSquares(side).stream()
+                .filter(square -> square.getPiece().getType() == type)
+                .findFirst()
+                .orElse(null);
+
+    }
+
+    public boolean isCoveredByPiece(Square square, boolean side) {
+
+        return getTeamSquares(side).stream()
+                .anyMatch(teamSquare -> teamSquare.getPiece().getProcessedMoves(this).containsKey(square));
+
+    }
+
+    public void processMoves() {
+
+        getSquares().forEach(square -> {
+
+            if (square.getPiece() != null)
+                square.getPiece().setMoves(square.getPiece().getAvailableMoves(this));
+
+        });
+
+        getSquares().forEach(square -> {
+
+            if (square.getPiece() != null)
+                square.getPiece().getProcessedMoves(this);
+
+        });
+
+        for (Square king : new Square[]{getSquareWithType(PieceType.KING, true), getSquareWithType(PieceType.KING, false)})
+            king.getPiece().getProcessedMoves(this).keySet()
+                    .removeIf(square -> square.getPiece() != null && isCoveredByPiece(square, !king.getPiece().getSide()));
+
+    }
+
+    public List<Square> getTeamSquares(boolean side) {
+
+        return getSquares().stream()
+                .filter(square -> square.getPiece() != null && square.getPiece().getSide() == side)
+                .collect(Collectors.toList());
 
     }
 
@@ -97,21 +145,32 @@ public class ChessBoard extends JFrame {
 
                     Square square = (Square) component;
 
-                    if (holding == null && square.getPiece() != null) {
+                    if (holding == null && square.getPiece() != null && turn == square.getPiece().getSide()) {
 
                         holding = square;
 
-                        square.getPiece().getProcessedMoves(ChessBoard.this).forEach(move -> move.setHighlighted(true));
+                        square.getPiece().getProcessedMoves(ChessBoard.this).forEach((key, value) -> key.setHighlighted(true));
 
                         square.setSelected(true);
 
-                    } else if (holding.getPiece() != null && holding.getPiece().getProcessedMoves(ChessBoard.this).contains(square)) {
+                    } else if (holding != null && holding.getPiece() != null && holding.getPiece().getProcessedMoves(ChessBoard.this).containsKey(square)) {
 
                         holding.getPiece().move(square);
 
                         holding = null;
 
+                        turn = !turn;
+
                     } else holding = null;
+
+                    if (getSquareWithType(PieceType.KING, turn).getPiece().getAvailableMoves(ChessBoard.this).size() == 0 &&
+                            getTeamSquares(turn).size() == 0) {
+
+
+                        System.out.println((!turn ? "White" : "Black") + " won!");
+
+                    }
+
 
                 }
 
