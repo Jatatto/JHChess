@@ -163,14 +163,6 @@ public class ChessBoard extends JFrame {
 
                     } else holding = null;
 
-                    if (getSquareWithType(PieceType.KING, turn).getPiece().getAvailableMoves(ChessBoard.this).size() == 0 &&
-                            getTeamSquares(turn).size() == 0) {
-
-
-                        System.out.println((!turn ? "White" : "Black") + " won!");
-
-                    }
-
 
                 }
 
@@ -201,7 +193,7 @@ public class ChessBoard extends JFrame {
 
                 square.setOpaque(true);
 
-                square.setBackground((row + col) % 2 == 0 ? Color.WHITE : new Color(30, 125, 30));
+                square.setBackground((row + col) % 2 == 0 ? Color.WHITE : Color.GRAY);
 
                 square.setBounds(bounds);
 

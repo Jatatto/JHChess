@@ -7,7 +7,6 @@ import com.jakehonea.jhchess.piece.Square;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BishopPiece extends Piece {

@@ -12,6 +12,7 @@ import java.util.*;
 public class KingPiece extends Piece {
 
     private final Pair<Integer, Integer>[] kingOffsets;
+    private boolean hasMoved = false;
 
     public KingPiece(ChessBoard board, PieceType type, BufferedImage image, boolean side) {
 
@@ -29,6 +30,15 @@ public class KingPiece extends Piece {
 
         kingOffsets[6] = new Pair<>(0, 1);
         kingOffsets[7] = new Pair<>(0, -1);
+
+    }
+
+    @Override
+    public void move(Square square) {
+
+        this.hasMoved = true;
+
+        super.move(square);
 
     }
 

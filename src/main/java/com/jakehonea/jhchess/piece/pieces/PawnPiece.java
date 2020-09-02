@@ -26,6 +26,9 @@ public class PawnPiece extends Piece {
 
         this.hasMoved = true;
 
+        if((square.getRow() == 0 && !getSide()) || (square.getRow() == 7 && getSide()))
+            square.setPiece(PieceType.QUEEN.createNewPiece(getBoard(), getSide()));
+
     }
 
     @Override
